@@ -218,7 +218,11 @@ export class WindowsManager {
 
 			let vscodeWindow = this.getWindowById(windowId);
 			if (vscodeWindow) {
-				this.reload(vscodeWindow);
+				if (vscodeWindow.isPluginDevelopmentHost) {
+					this.sendToAll('vscode:broadcast', { channel: 'vscode:pluginReload' }, [windowId]);
+				} else {
+					this.reload(vscodeWindow);
+				}
 			}
 		});
 

@@ -52,7 +52,7 @@ import { IOutputService } from 'vs/workbench/parts/output/common/output';
 import { IKeybindingService, IKeybindingContextKey } from 'vs/platform/keybinding/common/keybindingService';
 import { IQuickOpenService } from 'vs/workbench/services/quickopen/browser/quickOpenService';
 import { IWindowService, IBroadcast } from 'vs/workbench/services/window/electron-browser/windowService';
-import { ILogEntry, PLUGIN_LOG_BROADCAST_CHANNEL } from 'vs/workbench/services/thread/electron-browser/threadService';
+import { ILogEntry, PLUGIN_LOG_BROADCAST_CHANNEL, PLUGIN_RELOAD_BROADCAST_CHANNEL } from 'vs/workbench/services/thread/electron-browser/threadService';
 
 var DEBUG_BREAKPOINTS_KEY = 'debug.breakpoint';
 var DEBUG_BREAKPOINTS_ACTIVATED_KEY = 'debug.breakpointactivated';
@@ -197,8 +197,12 @@ export class DebugService extends ee.EventEmitter implements debug.IDebugService
 			return; // we are only intersted if we have an active debug session for extensionHost
 		}
 
+		if (broadcast.channel === PLUGIN_RELOAD_BROADCAST_CHANNEL) {
+			this.restartSession().done(null, errors.onUnexpectedError);;
+		}
+
 		// A plugin logged output, show it inside the REPL
-		if (broadcast.channel === PLUGIN_LOG_BROADCAST_CHANNEL) {
+		else if (broadcast.channel === PLUGIN_LOG_BROADCAST_CHANNEL) {
 			let extensionOutput: ILogEntry = broadcast.payload;
 			let sev = extensionOutput.severity === 'warn' ? severity.Warning : extensionOutput.severity === 'error' ? severity.Error : severity.Info;
 

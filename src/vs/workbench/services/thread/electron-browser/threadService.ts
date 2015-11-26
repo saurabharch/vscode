@@ -27,6 +27,7 @@ import cp = require('child_process');
 import ipc = require('ipc');
 
 export const PLUGIN_LOG_BROADCAST_CHANNEL = 'vscode:pluginLog';
+export const PLUGIN_RELOAD_BROADCAST_CHANNEL = 'vscode:pluginReload';
 
 // Enable to see detailed message communication between window and plugin host
 const logPluginHostCommunication = false;
